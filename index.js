@@ -1,0 +1,58 @@
+var http = require('http');
+var employeeService = require('./lib/employees');
+
+
+http.createServer(function (req, res) {
+	// A parsed url to work with in case there are parameters
+	var _url;
+
+	// In case the client uses lower case for methods.
+	req.method = req.method.toUpperCase();
+	console.log(req.method + ' ' + req.url);
+	
+	if (req.method !== 'GET') {
+		res.writeHead(501, {
+			'Content-Type': 'text/plain'
+		});
+		return res.end(req.method + ' is not implemented by this server.');
+	}
+
+	if (_url = /^\/employees$/i.exec(req.url)) {
+	// return a list of emplyees
+	employeeService.getEmployees(function (error, data) {
+		if (error) {
+			res.writeHead(500);
+		}
+		res.writeHead(200);
+		return res.end(data);
+
+	});
+
+
+	} else if (_url = /^\/employees\/(\d+)$/i.exec(req.url)) {
+		//find the employee by the id in the route
+
+		employeeService.getEmployee(_url[1], function (error, data) {
+			if (error) {
+				res.writeHead(500);
+			}
+			if (!data) {
+				res.writeHead(404);
+			}
+			// send the data with a 200 status code
+			res.writeHead(200);
+			return res.end('a single employee');
+		});
+	} else {
+		//try to send the static file if it exists, if not 404.
+		if (error) {
+			res.writeHead(404);
+		}
+		res.writeHead(200);
+		res.end('static file maybe');
+	}
+
+}).listen(1337, '127.0.0.1');
+
+console.log('Server running at http://127.0.0.1:1337/');
+
