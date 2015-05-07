@@ -9,7 +9,8 @@
   "author": "Dylan",
   "license": "ISC",
   "dependencies": {
-    "colors": "^1.1.0"
+    "colors": "^1.1.0",
+    "mongoose": "^4.0.2"
   },
   "devDependencies": {},
   "repository": {
